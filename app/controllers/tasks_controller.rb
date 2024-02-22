@@ -62,6 +62,8 @@ class TasksController < ApplicationController
   end
 
   def calculate_count
+    return false if task_params[:status] != 'To Do'
+    
     tasks = current_user.tasks
     todo_tasks_count = tasks.where(status: 'To Do').count
     (todo_tasks_count / tasks.count.to_f) >= 0.5
