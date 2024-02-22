@@ -13,20 +13,6 @@ RSpec.describe TasksController, type: :controller do
     end
   end
 
-  describe "GET #show" do
-    it "returns a success response" do
-      get :show, params: { id: task.to_param }
-      expect(response).to have_http_status(:ok)
-    end
-  end
-
-  describe "GET #new" do
-    it "returns a success response" do
-      get :new
-      expect(response).to have_http_status(:ok)
-    end
-  end
-
   describe "POST #create" do
     context "with valid params" do
       it "creates a new Task" do
@@ -48,13 +34,6 @@ RSpec.describe TasksController, type: :controller do
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json; charset=utf-8')
       end
-    end
-  end
-
-  describe "GET #edit" do
-    it "returns a success response" do
-      get :edit, params: { id: task.to_param }
-      expect(response).to have_http_status(:ok)
     end
   end
 

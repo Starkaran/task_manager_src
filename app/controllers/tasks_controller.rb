@@ -1,6 +1,6 @@
 class TasksController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_task, only: [:show, :edit, :update, :destroy]
+  before_action :set_task, only: [:update, :destroy]
   
   def index
     @tasks = current_user.tasks
@@ -8,18 +8,11 @@ class TasksController < ApplicationController
     render json: @tasks, each_serializer: TaskSerializer, status: :ok
   end
 
-  def show
-    authorize @task
-    render json: @task, serializer: TaskSerializer, status: :ok
-  end
-
-  def new
-    @task = Task.new
-    authorize @task
-    render json: @task, serializer: TaskSerializer, status: :ok
-  end
-
   def create
+    if calculate_count
+      render json: { message: 'Cannot create new To Do task' }, status: :unprocessable_entity
+      return
+    end
     @task = current_user.tasks.build(task_params)
     authorize @task
 
@@ -28,11 +21,6 @@ class TasksController < ApplicationController
     else
       render json: @task.errors, status: :unprocessable_entity
     end
-  end
-
-  def edit
-    authorize @task
-    render json: @task, serializer: TaskSerializer, status: :ok
   end
 
   def update
@@ -65,10 +53,18 @@ class TasksController < ApplicationController
 
   def set_task
     @task = Task.find(params[:id])
+  rescue
+    render json: { message: 'Task not found' }, status: :not_found
   end
 
   def task_params
     params.require(:task).permit(:title, :description, :status, :due_date)
+  end
+
+  def calculate_count
+    tasks = current_user.tasks
+    todo_tasks_count = tasks.where(status: 'To Do').count
+    (todo_tasks_count / tasks.count.to_f) >= 0.5
   end
 
   def render_tasks_json

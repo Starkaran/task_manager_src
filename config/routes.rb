@@ -8,5 +8,6 @@ Rails.application.routes.draw do
     end
   end
 
-  post '/users', to: 'users#create'
+  post '/users/sign_up', to: 'users#create'
+  post '/login', to: 'sessions#create'
 end
