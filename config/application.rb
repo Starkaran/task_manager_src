@@ -20,7 +20,13 @@ module TaskManager
     # config.eager_load_paths << Rails.root.join("extras")
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins 'localhost:3002' 
+        origins do |origin, _env|
+          if origin =~ /\Ahttps:\/\/[a-z0-9-]+\.netlify\.app\z/ || origin.start_with?("http://localhost:")
+            origin
+          else
+            '*'
+          end
+        end
         resource '*',
           headers: :any,
           methods: [:get, :post, :put, :patch, :delete, :options, :head],
