@@ -18,6 +18,8 @@ module TaskManager
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+    config.session_store :cookie_store, key: '_task_manager_session', secure: Rails.env.production?, same_site: :none
+    
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins do |origin, _env|
