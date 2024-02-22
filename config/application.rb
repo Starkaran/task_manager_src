@@ -21,10 +21,8 @@ module TaskManager
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins do |origin, _env|
-          if origin =~ /\Ahttps:\/\/[a-z0-9-]+\.netlify\.app\z/ || origin.start_with?("http://localhost:")
+          if origin =~ /\Ahttps:\/\/[a-z0-9-]+\.netlify\.app\z/ || origin =~ /\Ahttp:\/\/localhost(:\d+)?\z/
             origin
-          else
-            '*'
           end
         end
         resource '*',
@@ -32,6 +30,6 @@ module TaskManager
           methods: [:get, :post, :put, :patch, :delete, :options, :head],
           credentials: true
       end
-    end
+    end    
   end
 end
